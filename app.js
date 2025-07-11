@@ -72,7 +72,7 @@ const validateReview = (req,res,next) =>{
 
 app.get("/listings",async(req,res )=>{
     const alllistings = await  Listing.find({});
-    res.render("listings/index", { listings: alllistings });  // ✅ CORRECT
+    res.render("listings/index", { listings: alllistings }); 
 
 
     });
@@ -164,10 +164,10 @@ app.delete("/listings/:id",async (req,res)=>{
 // Reviews 
 // Post Route
 app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => {
-    const { id } = req.params; // ✅ extract id
-    const listing = await Listing.findById(id).populate("reviews"); // ✅ use id properly
+    const { id } = req.params; 
+    const listing = await Listing.findById(id).populate("reviews");
     
-    let newReview = new Review(req.body.review); // ✅ correct variable name
+    let newReview = new Review(req.body.review); 
     listing.reviews.push(newReview);
 
     await newReview.save();
