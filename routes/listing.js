@@ -43,23 +43,43 @@ router.get("/",async(req,res )=>{
         //     res.redirect("/listings");
        // });
     
-     router.post("/",wrapAsync( async (req, res) => {
-        const data = req.body.listing;
+    //  router.post("/",wrapAsync( async (req, res) => {
+    //     const data = req.body.listing;
     
-        // 🔍 If image object is missing, create default
-        if (!data.image || !data.image.url || data.image.url.trim() === "") {
-            data.image = {
-                filename: "default",
-                url: "https://images.unsplash.com/photo-1602088113235-229c19758e9f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YmVhY2glMjB2YWNhdGlvbnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60"
-            };
-        }
+    //     // 🔍 If image object is missing, create default
+    //     if (!data.image || !data.image.url || data.image.url.trim() === "") {
+    //         data.image = {
+    //             filename: "default",
+    //             url: "https://images.unsplash.com/photo-1602088113235-229c19758e9f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YmVhY2glMjB2YWNhdGlvbnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60"
+    //         };
+    //     }
     
-        const newListing = new Listing(data);
-        await newListing.save();
-        res.redirect("/listings");
+    //     const newListing = new Listing(data);
+    //     await newListing.save();
+    //     req.flash("sucess","New Listing Created !");
+    //     res.redirect("/listings");
     
-    })
-    );
+    // })
+    // );
+
+    router.post("/", wrapAsync(async (req, res) => {
+    const data = req.body.listing;
+
+    // 🔍 If image object is missing, create default
+    if (!data.image || !data.image.url || data.image.url.trim() === "") {
+        data.image = {
+            filename: "default",
+            url: "https://images.unsplash.com/photo-1602088113235-229c19758e9f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YmVhY2glMjB2YWNhdGlvbnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60"
+        };
+    }
+
+    const newListing = new Listing(data);
+    await newListing.save();
+    req.flash("success", "New Listing Created!");
+
+    res.redirect("/listings");
+}));
+
        // Edit Route
         router.get("/:id/edit",async(req,res)=>{
            let {id}=req.params;
