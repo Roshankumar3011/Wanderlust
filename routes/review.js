@@ -1,10 +1,10 @@
 const express = require("express");
-const router = express.Router({ mergeParams: true }); // important for nested routes
+const router = express.Router({ mergeParams: true }); 
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const { reviewSchema } = require("../schema.js");
 const Review = require("../models/review.js");
-const Listing = require("../models/listing.js"); // ✅ You missed this
+const Listing = require("../models/listing.js"); 
 
 // Middleware to validate review
 const validateReview = (req, res, next) => {
@@ -17,7 +17,7 @@ const validateReview = (req, res, next) => {
     }
 };
 
-// POST /listings/:id/reviews
+// POST
 router.post("/", validateReview, wrapAsync(async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
@@ -31,7 +31,7 @@ router.post("/", validateReview, wrapAsync(async (req, res) => {
     res.redirect(`/listings/${listing._id}`);
 }));
 
-// DELETE /listings/:id/reviews/:reviewId
+// DELETE 
 router.delete("/:reviewId", wrapAsync(async (req, res) => {
     const { id, reviewId } = req.params;
 
