@@ -4,6 +4,7 @@ const wrapAsync =require("../utils/wrapAsync.js");
 const ExpressError=require("../utils/ExpressError.js");
 const Listing = require('../models/listing.js');
 const {listingSchema}=require("../schema.js");
+const {isLoggedIn}=require("../middleware.js");
 
 const validateListing = (req,res,next) =>{
     let {error} = listingSchema.validate(req.body);
@@ -23,65 +24,27 @@ router.get("/",async(req,res )=>{
 
     });
 // New Route
-    router.get("/new",(req,res)=>{
+   router.get("/new",isLoggedIn,(req, res) => {
+    res.render("listings/new.ejs");
+});
 
-       res.render("listings/new.ejs");
-    });
-  // show Route
-
-    // router.get("/:id",async(req,res)=>{
-
-    //     let {id}=req.params;
-    //     const listing=  await Listing.findById(id).populate("reviews");
-    //     if(!listing){
-    //          req.flash("error", "Listing you requested foe does not exist!");
-    //          res.redirect("/listings");
-    //     }
-    //     res.render("listings/show.ejs",{listing});
-    // });
-
+// Show Route
     router.get("/:id", async (req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews");
+    const listing = await Listing.findById(id).populate("reviews").populate("owner");
 
     if (!listing) {
         req.flash("error", "Listing you requested for does not exist!");
-        return res.redirect("/listings"); // ✅ return added here
+        return res.redirect("/listings");
     }
-
+    console.log(listing);
     res.render("listings/show.ejs", { listing });
 });
 
-     //Create Route
-        // app.post("/listings",async(req,res)=>{
-        //    const newListing =new Listing(req.body.listing);
-        //     await newListing.save();
-        //     res.redirect("/listings");
-       // });
-    
-    //  router.post("/",wrapAsync( async (req, res) => {
-    //     const data = req.body.listing;
-    
-    //     // 🔍 If image object is missing, create default
-    //     if (!data.image || !data.image.url || data.image.url.trim() === "") {
-    //         data.image = {
-    //             filename: "default",
-    //             url: "https://images.unsplash.com/photo-1602088113235-229c19758e9f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YmVhY2glMjB2YWNhdGlvbnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60"
-    //         };
-    //     }
-    
-    //     const newListing = new Listing(data);
-    //     await newListing.save();
-    //     req.flash("sucess","New Listing Created !");
-    //     res.redirect("/listings");
-    
-    // })
-    // );
-
-    router.post("/", wrapAsync(async (req, res) => {
+//Create Route
+    router.post("/",isLoggedIn, wrapAsync(async (req, res) => {
     const data = req.body.listing;
-
-    // 🔍 If image object is missing, create default
+// 🔍 If image object is missing, create default
     if (!data.image || !data.image.url || data.image.url.trim() === "") {
         data.image = {
             filename: "default",
@@ -90,6 +53,7 @@ router.get("/",async(req,res )=>{
     }
 
     const newListing = new Listing(data);
+    newListing.owner = req.user._id;
     await newListing.save();
     req.flash("success", "New Listing Created!");
 
@@ -97,24 +61,19 @@ router.get("/",async(req,res )=>{
 }));
 
        // Edit Route
-        router.get("/:id/edit",async(req,res)=>{
+        router.get("/:id/edit",isLoggedIn,async(req,res)=>{
            let {id}=req.params;
             const listing=  await Listing.findById(id);
              if (!listing) {
         req.flash("error", "Listing you requested for does not exist!");
-        return res.redirect("/listings"); // ✅ return added here
+        return res.redirect("/listings");
     }
             res.render("listings/edit.ejs",{listing});
         });
     
-    //update route
-    // app.put("/listings/:id",async(req,res )=>{
-    //     let {id}=req.params;
-    //   await  Listing.findByIdAndUpdate(id,{...req.body.listing});
-    //   res.redirect(`/listings/${id}`);
-    // });
+ //Update route
     
-    router.put("/:id", async (req, res) => {
+    router.put("/:id",isLoggedIn, async (req, res) => {
         let { id } = req.params;
         const listing = await Listing.findById(id); // purani image lene ke liye
         const data = req.body.listing;
@@ -133,11 +92,9 @@ router.get("/",async(req,res )=>{
          req.flash("success", "Listing Updated!");
         res.redirect(`/listings/${id}`);
     });
-    
-    
-    //delete route
-    
-    router.delete("/:id",async (req,res)=>{
+
+    //delete route  
+    router.delete("/:id",isLoggedIn,async (req,res)=>{
         let {id}=req.params;
        let deletedlisting=  await Listing.findByIdAndDelete(id);
        console.log(deletedlisting);
