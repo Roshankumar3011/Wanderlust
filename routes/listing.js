@@ -4,27 +4,28 @@ const wrapAsync =require("../utils/wrapAsync.js");
 const Listing = require('../models/listing.js');
 const {isLoggedIn,isOwner,validateListing }=require("../middleware.js");
 const listingController = require("../controllers/listings.js");
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 
-//Index Route
- router.get("/",wrapAsync(listingController.index));
+
+
+router.route("/")
+  .get(wrapAsync(listingController.index))
+  // .post(isLoggedIn, wrapAsync(listingController.createListing));
+   .post
+  (upload.single('listing[image]'),(req,res)=>{
+   res.send(req.file);
+  });
 
 // New Route
    router.get("/new",isLoggedIn,listingController.renderNewForm);
 
-// Show Route
-    router.get("/:id",listingController.showListing);
-
-//Create Route
-    router.post("/",isLoggedIn, wrapAsync(listingController.createListing));
-
+router.route("/:id")
+ .get(wrapAsync(listingController.showListing))
+ .put(isLoggedIn, isOwner, wrapAsync(listingController.updateListing))
+ .delete(isLoggedIn,isOwner,listingController.destroyListing);
+    
 // Edit Route
     router.get("/:id/edit",isLoggedIn,isOwner,listingController.renderEditForm);
-    
-//Update route
-    
-    router.put("/:id",isLoggedIn, isOwner, wrapAsync(listingController.updateListing));
 
-//delete route  
-    router.delete("/:id",isLoggedIn,isOwner,listingController.destroyListing);
-    
 module.exports = router;
