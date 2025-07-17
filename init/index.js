@@ -24,3 +24,44 @@ const initDB= async() =>{
     console.log("data  was initialized");
 };
 initDB();
+
+// seeds/index.js
+// const axios = require("axios");
+// const streamifier = require("streamifier");
+// const { cloudinary } = require("../utils/cloudConfig");
+
+// const initDB = async () => {
+//   await Listing.deleteMany({});
+//   const updatedData = [];
+
+//   for (let obj of initdata.data) {
+//     try {
+//       const response = await axios.get(obj.image.url, { responseType: "arraybuffer" });
+
+//       const stream = streamifier.createReadStream(response.data);
+
+//       const uploadResult = await new Promise((resolve, reject) => {
+//         const streamUpload = cloudinary.uploader.upload_stream(
+//           { folder: "wanderlust_seed" },
+//           (error, result) => {
+//             if (result) resolve(result);
+//             else reject(error);
+//           }
+//         );
+//         stream.pipe(streamUpload);
+//       });
+
+//       obj.image.url = uploadResult.secure_url;
+//       obj.image.filename = uploadResult.public_id;
+//       obj.owner = "6873cd1608dcc1774af4e0f0";
+
+//       updatedData.push(obj);
+//       console.log(`✅ Uploaded: ${obj.title}`);
+//     } catch (err) {
+//       console.error(`❌ Failed to upload image for ${obj.title}:`, err.message);
+//     }
+//   }
+
+//   await Listing.insertMany(updatedData);
+//   console.log("✅ Data was initialized with Cloudinary images");
+// };
