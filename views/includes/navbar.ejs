@@ -3,7 +3,7 @@
     background-color: #fe424d;
     color: #fff;
     border-radius: 25px;
-    padding: 0 1rem 0 1rem;
+    padding: 0 1rem;
   }
 
   .search-btn:hover {
@@ -18,19 +18,54 @@
 
   .search-inp {
     border-radius: 25px;
-    padding: 0.5rem 3rem 0.5rem 3rem;
+    padding: 0.5rem 3rem;
     font-size: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .navbar-collapse {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      margin-top: 0.5rem;
+    }
+
+    .navbar-nav {
+      flex-direction: column !important;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .navbar-nav .nav-link {
+      width: 100%;
+    }
+
+    .navbar-nav.ms-auto {
+      margin-left: 0 !important;
+    }
+
+    .d-flex {
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .search-inp {
+      width: 100%;
+    }
+
+    .search-btn {
+      width: 100%;
+    }
   }
 </style>
 
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
-    <button class="navbar-toggler" 
-      type="button" 
-      data-bs-toggle="collapse" 
-      data-bs-target="#navbarNavAltMarkup"
-    >
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -40,7 +75,7 @@
       </div>
 
       <div class="navbar-nav ms-auto">
-        <form class="d-flex" action="/listings" method="GET">
+        <form class="d-flex w-100" action="/listings" method="GET">
           <input
             class="form-control me-2 search-inp"
             type="search"
