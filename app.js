@@ -20,16 +20,15 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
 
-const dbUrl =process.env.ATLASDB_URL;
+const dbUrl = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/wanderlust";
 main().then(() => {
-console.log("connected to DB");
-}).catch(err=>{
-    console.log("err");
+    console.log("connected to DB");
+}).catch(err => {
+    console.log("Database connection error:", err);
 });
 
 async function main() {
     await mongoose.connect(dbUrl);
-    
 }
 
 app.set("view engine","ejs");
